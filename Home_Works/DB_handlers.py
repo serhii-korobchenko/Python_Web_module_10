@@ -1,0 +1,140 @@
+from models_mongo import Record, Phone, Adress, Email
+import connect
+
+
+
+
+# def look_up_DB (text):
+#
+#
+#
+#     """
+#     SELECT r.name, r.created, p.phone_name
+#     FROM records r
+#     LEFT JOIN phones p ON r.id = p.rec_id
+#     """
+#     # result = session.query\
+#     #     (Record.name, Record.created, Phone.phone_name, Email.email_name) \
+#     #     .select_from(Record)\
+#     #     .join(Email) \
+#     #     .join(Adress) \
+#     #     .join(Phone).all()
+#     #
+#     # print (result)
+#     query_list = [(Record.name, Record.id), (Record.created, Record.id), (Email.email_name, Email.rec_id),\
+#                   (Adress.adress_name, Adress.rec_id), (Phone.phone_name, Phone.rec_id)]
+#     for item in query_list:
+#
+#         if session.query(item[0]).all():
+#             #print(session.query(item[0], item[1]).all())
+#             rec_id = session.query(item[1]).all()
+#             #print(f'rec_id = {rec_id}')
+#
+#             for outer in session.query(item[0], item[1]).all():
+#                 #print (outer[0])
+#
+#                 if type(outer[0]) != str:
+#                     lookup_res = outer[0].strftime('%A %d %B %Y')
+#                 else:
+#                     lookup_res = outer[0]
+#
+#                 if lookup_res.lower().find(text.lower()) >= 0:
+#                     print(
+#                         f'Looked up text was found in next statement: "{lookup_res}" in record: "{session.query(Record.name).filter(Record.id == outer[1]).first()[0]}"')
+#
+#
+#
+
+def add_records_DB(name, phone):
+    phone = Phone(name=phone)
+    adress = Adress(name=None)
+    email = Email(name=None)
+    Record(name=name, phones=[phone, ], adresses=[adress, ], emails=[email, ]).save()
+
+
+
+def change_phone_DB(name, new_phone):
+
+    record_lookup = Record.objects(name=name)
+    record_lookup.
+
+    phone = Phone(name=new_phone)
+    Record(name=name, phones=[phone, ]).save()
+
+# def add_phone_DB(name, phone):
+#
+#
+#     phone1 = Phone(phone_name=phone, rec_id=str(session.query(Record.id).filter(Record.name == name).first()[0]))
+#     session.add(phone1)
+#     session.commit()
+#     session.close()
+#
+# def del_phone_DB(name, phone):
+#
+#
+#     phone1 = session.query(Phone).filter(and_(Phone.phone_name == phone, Phone.rec_id==str(session.query(Record.id).filter(Record.name == name).first()[0])))
+#     phone1.delete()
+#     session.commit()
+#     session.close()
+#
+# def del_rec_DB(name):
+#
+#
+#     rec1 = session.query(Record).filter(Record.name == name)
+#     rec1.delete()
+#     session.commit()
+#     session.close()
+#
+# def add_email_DB(name, email):
+#
+#
+#     email1 = Email(email_name=email, rec_id=str(session.query(Record.id).filter(Record.name == name).first()[0]))
+#     session.add(email1)
+#     session.commit()
+#     session.close()
+#
+# def change_email_DB(name, new_email):
+#
+#
+#     email1 = session.query(Email).filter(Email.rec_id == str(session.query(Record.id).filter(Record.name == name).first()[0]))
+#     email1.update({'email_name': new_email})
+#     session.commit()
+#     session.close()
+#
+# def add_adress_DB(name, adress):
+#
+#
+#     adress1 = Adress(adress_name=adress, rec_id=str(session.query(Record.id).filter(Record.name == name).first()[0]))
+#     session.add(adress1)
+#     session.commit()
+#     session.close()
+#
+# def change_adress_DB(name, new_adress):
+#
+#
+#     adress1 = session.query(Adress).filter(Adress.rec_id == str(session.query(Record.id).filter(Record.name == name).first()[0]))
+#     adress1.update({'adress_name': new_adress})
+#     session.commit()
+#     session.close()
+
+
+
+
+
+
+if __name__ == '__main__':
+    #add_records_DB('Andrii', '888888888')
+    change_phone_DB('Andrii', '111111111')
+    # add_phone_DB('Bumba', '2222222222')
+    # del_phone_DB('Bumba', '2222222222')
+    # del_rec_DB('Andrii')
+    # add_email_DB('Bumba', '1@1.1')
+    # change_email_DB('Bumba', '2@2.2')
+    # add_adress_DB('Bumba', 'Vinica')
+    # change_adress_DB('Bumba', 'Lviv')
+    #look_up_DB ('11')
+
+
+
+
+
