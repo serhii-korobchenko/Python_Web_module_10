@@ -1,5 +1,7 @@
 from models_mongo import Record, Phone, Adress, Email
 import connect
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 
 
@@ -54,21 +56,23 @@ def add_records_DB(name, phone):
 
 
 def change_phone_DB(name, new_phone):
-
-    record_lookup = Record.objects(name=name)
-    record_lookup.
-
     phone = Phone(name=new_phone)
-    Record(name=name, phones=[phone, ]).save()
+    record = Record.objects(name=name)
+    record.update_one(set__phones=phone)
 
-# def add_phone_DB(name, phone):
-#
-#
-#     phone1 = Phone(phone_name=phone, rec_id=str(session.query(Record.id).filter(Record.name == name).first()[0]))
-#     session.add(phone1)
-#     session.commit()
-#     session.close()
-#
+
+def add_phone_DB(name, phone):
+
+    phone_add = Phone(name=phone)
+    record = Record.objects(name=name)
+
+    for r in record:
+        print(r.to_mongo().to_dict())
+
+
+
+    #record.update_one(push__phones=phone_add)
+
 # def del_phone_DB(name, phone):
 #
 #
@@ -125,7 +129,7 @@ def change_phone_DB(name, new_phone):
 if __name__ == '__main__':
     #add_records_DB('Andrii', '888888888')
     change_phone_DB('Andrii', '111111111')
-    # add_phone_DB('Bumba', '2222222222')
+    add_phone_DB('Andrii', '2222222222')
     # del_phone_DB('Bumba', '2222222222')
     # del_rec_DB('Andrii')
     # add_email_DB('Bumba', '1@1.1')
