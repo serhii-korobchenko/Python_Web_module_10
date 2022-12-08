@@ -49,16 +49,15 @@ from bson.objectid import ObjectId
 
 def add_records_DB(name, phone):
     phone = Phone(name=phone)
-    adress = Adress(name=None)
-    email = Email(name=None)
-    Record(name=name, phones=[phone, ], adresses=[adress, ], emails=[email, ]).save()
+
+    Record(name=name, phones=[phone, ]).save()
 
 
 
 def change_phone_DB(name, new_phone):
     phone = Phone(name=new_phone)
     record = Record.objects(name=name)
-    record.update_one(set__phones=phone)
+    record.update(phones=[phone, ])
 
 
 def add_phone_DB(name, phone):
@@ -66,37 +65,39 @@ def add_phone_DB(name, phone):
     phone_add = Phone(name=phone)
     record = Record.objects(name=name)
 
-    for r in record:
-        print(r.to_mongo().to_dict())
+    #for r in record:
+    #    print(r.to_mongo().to_dict())
+
+    record.update_one(push__phones=phone_add)
+
+def del_phone_DB(name, phone):
+
+    phone_del = Phone(name=phone)
+    record = Record.objects(name=name)
+
+    #for r in record:
+    #    print(r.to_mongo().to_dict())
+
+    record.update_one(pull__phones=phone_del)
 
 
 
-    #record.update_one(push__phones=phone_add)
 
-# def del_phone_DB(name, phone):
-#
-#
-#     phone1 = session.query(Phone).filter(and_(Phone.phone_name == phone, Phone.rec_id==str(session.query(Record.id).filter(Record.name == name).first()[0])))
-#     phone1.delete()
-#     session.commit()
-#     session.close()
-#
-# def del_rec_DB(name):
-#
-#
-#     rec1 = session.query(Record).filter(Record.name == name)
-#     rec1.delete()
-#     session.commit()
-#     session.close()
-#
-# def add_email_DB(name, email):
-#
-#
-#     email1 = Email(email_name=email, rec_id=str(session.query(Record.id).filter(Record.name == name).first()[0]))
-#     session.add(email1)
-#     session.commit()
-#     session.close()
-#
+def del_rec_DB(name):
+
+    record = Record.objects(name=name)
+    record.delete()
+
+def add_email_DB(name, email):
+
+    email_add = Email(name=email)
+    record = Record.objects(name=name)
+
+    # for r in record:
+    #    print(r.to_mongo().to_dict())
+
+    record.update_one(push__emails=email_add)
+
 # def change_email_DB(name, new_email):
 #
 #
@@ -127,12 +128,12 @@ def add_phone_DB(name, phone):
 
 
 if __name__ == '__main__':
-    #add_records_DB('Andrii', '888888888')
-    change_phone_DB('Andrii', '111111111')
-    add_phone_DB('Andrii', '2222222222')
-    # del_phone_DB('Bumba', '2222222222')
-    # del_rec_DB('Andrii')
-    # add_email_DB('Bumba', '1@1.1')
+    add_records_DB('Andrii', '888888888')
+    #change_phone_DB('Andrii', '111111111')
+    #add_phone_DB('Andrii', '2222222222')
+    #del_phone_DB('Andrii', '2222222222')
+    #del_rec_DB('Bobo')
+    add_email_DB('Andrii', '1@1.1')
     # change_email_DB('Bumba', '2@2.2')
     # add_adress_DB('Bumba', 'Vinica')
     # change_adress_DB('Bumba', 'Lviv')
