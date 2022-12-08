@@ -3,49 +3,30 @@ import connect
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
+def look_up_DB (text):
 
+    records = Record.objects()
+    for r in records:
+        dict_record = r.to_mongo().to_dict()
+        record_name = dict_record['name']
 
+        if record_name.lower().find(text.lower()) >= 0:
+            print(
+                f'Looked up text was found in next statement: "{record_name}" in record: "{record_name}"')
 
-# def look_up_DB (text):
-#
-#
-#
-#     """
-#     SELECT r.name, r.created, p.phone_name
-#     FROM records r
-#     LEFT JOIN phones p ON r.id = p.rec_id
-#     """
-#     # result = session.query\
-#     #     (Record.name, Record.created, Phone.phone_name, Email.email_name) \
-#     #     .select_from(Record)\
-#     #     .join(Email) \
-#     #     .join(Adress) \
-#     #     .join(Phone).all()
-#     #
-#     # print (result)
-#     query_list = [(Record.name, Record.id), (Record.created, Record.id), (Email.email_name, Email.rec_id),\
-#                   (Adress.adress_name, Adress.rec_id), (Phone.phone_name, Phone.rec_id)]
-#     for item in query_list:
-#
-#         if session.query(item[0]).all():
-#             #print(session.query(item[0], item[1]).all())
-#             rec_id = session.query(item[1]).all()
-#             #print(f'rec_id = {rec_id}')
-#
-#             for outer in session.query(item[0], item[1]).all():
-#                 #print (outer[0])
-#
-#                 if type(outer[0]) != str:
-#                     lookup_res = outer[0].strftime('%A %d %B %Y')
-#                 else:
-#                     lookup_res = outer[0]
-#
-#                 if lookup_res.lower().find(text.lower()) >= 0:
-#                     print(
-#                         f'Looked up text was found in next statement: "{lookup_res}" in record: "{session.query(Record.name).filter(Record.id == outer[1]).first()[0]}"')
-#
-#
-#
+        for key, value in dict_record.items():
+            if key == 'emails' or key == 'adresses' or key == 'phones':
+
+                if value:
+                    #print(key, value)
+
+                    for inner_dict in value: # value - list
+
+                        dict_value = inner_dict['name']
+                        if dict_value.lower().find(text.lower()) >= 0:
+                            print(
+                                f'Looked up text was found in next statement: "{dict_value}" in record: "{record_name}"')
+
 
 def add_records_DB(name, phone):
     phone = Phone(name=phone)
@@ -98,46 +79,39 @@ def add_email_DB(name, email):
 
     record.update_one(push__emails=email_add)
 
-# def change_email_DB(name, new_email):
-#
-#
-#     email1 = session.query(Email).filter(Email.rec_id == str(session.query(Record.id).filter(Record.name == name).first()[0]))
-#     email1.update({'email_name': new_email})
-#     session.commit()
-#     session.close()
-#
-# def add_adress_DB(name, adress):
-#
-#
-#     adress1 = Adress(adress_name=adress, rec_id=str(session.query(Record.id).filter(Record.name == name).first()[0]))
-#     session.add(adress1)
-#     session.commit()
-#     session.close()
-#
-# def change_adress_DB(name, new_adress):
-#
-#
-#     adress1 = session.query(Adress).filter(Adress.rec_id == str(session.query(Record.id).filter(Record.name == name).first()[0]))
-#     adress1.update({'adress_name': new_adress})
-#     session.commit()
-#     session.close()
+def change_email_DB(name, new_email):
+
+    email = Email(name=new_email)
+    record = Record.objects(name=name)
+    record.update(emails=[email, ])
+
+def add_adress_DB(name, adress):
+
+    adress_add = Adress(name=adress)
+    record = Record.objects(name=name)
+
+    record.update_one(push__adresses=adress_add)
 
 
+def change_adress_DB(name, new_adress):
 
-
+    adress = Adress(name=new_adress)
+    record = Record.objects(name=name)
+    record.update(adresses=[adress, ])
 
 
 if __name__ == '__main__':
-    add_records_DB('Andrii', '888888888')
+    #add_records_DB('Serhii', '111111111')
+    #add_records_DB('Andrii', '888888888')
     #change_phone_DB('Andrii', '111111111')
     #add_phone_DB('Andrii', '2222222222')
     #del_phone_DB('Andrii', '2222222222')
     #del_rec_DB('Bobo')
-    add_email_DB('Andrii', '1@1.1')
-    # change_email_DB('Bumba', '2@2.2')
-    # add_adress_DB('Bumba', 'Vinica')
-    # change_adress_DB('Bumba', 'Lviv')
-    #look_up_DB ('11')
+    #add_email_DB('Andrii', '1@1.1')
+    #change_email_DB('Andrii', '2@2.2')
+    #add_adress_DB('Andrii', 'Vinica')
+    #change_adress_DB('Andrii', 'Lviv')
+    look_up_DB ('an')
 
 
 
